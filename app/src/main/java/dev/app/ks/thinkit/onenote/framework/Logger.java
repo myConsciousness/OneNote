@@ -3,7 +3,6 @@ package dev.app.ks.thinkit.onenote.framework;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public enum Logger {
@@ -11,7 +10,7 @@ public enum Logger {
         @Override
         public void write(String tag, String methodName, String message, String... replaceArgs) {
 
-            write(tag, methodName, message, getReplaceList(replaceArgs));
+            write(tag, methodName, message, Logger.getReplaceList(replaceArgs));
         }
 
         @Override
@@ -25,7 +24,7 @@ public enum Logger {
         @Override
         public void write(String tag, String methodName, String message, String... replaceArgs) {
 
-            write(tag, methodName, message, getReplaceList(replaceArgs));
+            write(tag, methodName, message, Logger.getReplaceList(replaceArgs));
         }
 
         @Override
@@ -39,7 +38,7 @@ public enum Logger {
         @Override
         public void write(String tag, String methodName, String message, String... replaceArgs) {
 
-            write(tag, methodName, message, getReplaceList(replaceArgs));
+            write(tag, methodName, message, Logger.getReplaceList(replaceArgs));
         }
 
         @Override
@@ -53,7 +52,7 @@ public enum Logger {
         @Override
         public void write(String tag, String methodName, String message, String... replaceArgs) {
 
-            write(tag, methodName, message, getReplaceList(replaceArgs));
+            write(tag, methodName, message, Logger.getReplaceList(replaceArgs));
         }
 
         @Override
@@ -68,24 +67,24 @@ public enum Logger {
     Logger() {
     }
 
+    protected static List<String> getReplaceList(String[] replaceArgs) {
+
+        List<String> replaceList = new ArrayList<>();
+
+        if (replaceArgs.length > 0) {
+            for (int i = 0, sizeReplaceArgs = replaceArgs.length; i < sizeReplaceArgs; i++) {
+                replaceList.add(replaceArgs[i]);
+            }
+        }
+
+        return replaceList;
+    }
+
     protected String formatMessage(String methodName, String message, List<String> replaceList) {
 
         String replacedMessage = replaceList.isEmpty() ? message : String.format(message, replaceList);
 
         return String.format(LOG_FORMAT, name(), methodName, replacedMessage);
-    }
-
-    protected List<String> getReplaceList(String[] replaceArgs) {
-
-        List<String> replaceList = new ArrayList<>();
-
-        if (replaceArgs.length > 0) {
-            Arrays.asList(replaceArgs)
-                    .stream()
-                    .forEach(arg -> replaceList.add(arg));
-        }
-
-        return replaceList;
     }
 
     public abstract void write(String tag, String methodName, String message, String... replaceArgs);

@@ -3,4 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="flatShamrock">#2FCDB4</color>
+    <color name="flatWhiteSmoke">#F8F8F8</color>
+    <color name="flatLightCoral">#F27398</color>
+    <color name="flatSolitude">#ECEEF1</color>
+    <color name="flatBunker">#202223</color>
 </resources>

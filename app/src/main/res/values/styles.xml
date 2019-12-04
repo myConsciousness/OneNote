@@ -17,4 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="TextInputLayout" parent="Widget.Design.TextInputLayout">
+        <item name="colorControlActivated">@color/flatShamrock</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

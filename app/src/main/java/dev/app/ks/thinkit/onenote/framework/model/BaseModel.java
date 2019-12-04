@@ -26,9 +26,6 @@ public abstract class BaseModel<E extends Enum<E> & IModelMapKey> {
      * 定数 : クラス名を保持する。
      */
     private static final String TAG = BaseModel.class.getName();
-
-    protected ModelList<ModelMap<E, Object>> modelInfo = new ModelList<>(0);
-
     /**
      * 変数 : 操作するモデル情報を保持する。
      */
@@ -37,6 +34,7 @@ public abstract class BaseModel<E extends Enum<E> & IModelMapKey> {
      * 変数 : データベース操作を行うアダプターを保持する。
      */
     private final DatabaseAdapter databaseAdapter;
+    protected ModelList<ModelMap<E, Object>> modelInfo = new ModelList<>(0);
 
     /**
      * 当該基底クラスのコンストラクタ。

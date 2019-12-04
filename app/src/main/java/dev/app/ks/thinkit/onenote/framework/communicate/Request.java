@@ -23,38 +23,7 @@ public final class Request {
 
     private HttpStatusCode httpStatusCode;
 
-    public boolean send(String url, RequestMethod method) {
-        return send(url, method, new HashMap<>());
-    }
-
-    public boolean send(
-            String url,
-            RequestMethod method,
-            Map<String, String> queryMap) {
-
-        String requestUrl = makeRequestUrl(url, queryMap);
-
-        try {
-            HttpURLConnection connection = connect(requestUrl, method);
-
-            if (isValidStatusCode(connection)) {
-                String response = getStringResponse(connection);
-                setResponse(response);
-            }
-
-            HttpStatusCode httpStatusCode
-                    = HttpStatusCode.getStatusFromCode(connection.getResponseCode());
-
-            setHttpStatusCode(httpStatusCode);
-
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private String makeRequestUrl(String url, Map<String, String> queryMap) {
+    private static String makeRequestUrl(String url, Map<String, String> queryMap) {
 
         if (queryMap.isEmpty()) {
             return url;
@@ -82,7 +51,7 @@ public final class Request {
         return requestUrl.toString();
     }
 
-    private HttpURLConnection connect(
+    private static HttpURLConnection connect(
             String requestUrl,
             RequestMethod method) throws IOException {
 
@@ -98,11 +67,11 @@ public final class Request {
         return connection;
     }
 
-    private boolean isValidStatusCode(HttpURLConnection con) throws IOException {
+    private static boolean isValidStatusCode(HttpURLConnection con) throws IOException {
         return con.getResponseCode() == HttpURLConnection.HTTP_OK;
     }
 
-    private String getStringResponse(HttpURLConnection conn) throws IOException {
+    private static String getStringResponse(HttpURLConnection conn) throws IOException {
 
         StringBuilder response = new StringBuilder();
 
@@ -123,6 +92,37 @@ public final class Request {
         conn.disconnect();
 
         return response.toString();
+    }
+
+    public boolean send(String url, RequestMethod method) {
+        return send(url, method, new HashMap<String, String>());
+    }
+
+    public boolean send(
+            String url,
+            RequestMethod method,
+            Map<String, String> queryMap) {
+
+        String requestUrl = makeRequestUrl(url, queryMap);
+
+        try {
+            HttpURLConnection connection = connect(requestUrl, method);
+
+            if (isValidStatusCode(connection)) {
+                String response = getStringResponse(connection);
+                setResponse(response);
+            }
+
+            HttpStatusCode httpStatusCode
+                    = HttpStatusCode.getStatusFromCode(connection.getResponseCode());
+
+            setHttpStatusCode(httpStatusCode);
+
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public String getResponse() {

@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.ads.consent.ConsentStatus;
 import com.google.ads.mediation.admob.AdMobAdapter;
@@ -34,11 +33,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import dev.app.ks.thinkit.onenote.BuildConfig;
-import dev.app.ks.thinkit.onenote.SessionSharedPreferences;
 import dev.app.ks.thinkit.onenote.framework.model.CurrentApplicationInformation;
-import dev.app.ks.thinkit.onenote.framework.model.MasterMessageInformation;
-import dev.app.ks.thinkit.onenote.property.MessageID;
-import dev.app.ks.thinkit.onenote.property.MessageLanguageKind;
 
 /**
  * ======================================================================
@@ -86,11 +81,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     /**
-     * セッション共有情報へアクセスするためのオブジェクト。
-     */
-    private SessionSharedPreferences sessionSharedPreferences;
-
-    /**
      * インテースティシャル広告のオブジェクト。
      */
     private InterstitialAd mInterstitialAd;
@@ -104,6 +94,88 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected BaseActivity(int activityLayout) {
         this.activityLayout = activityLayout;
         progressDialogHandler = new ProgressDialogHandler(this);
+    }
+
+    /**
+     * 共有情報のデフォルトファイル名を返却します。
+     *
+     * @param context アプリケーション情報。
+     * @return デフォルトファイル名。
+     */
+    private static String getDefaultSharedPreferencesName(Context context) {
+        return context.getPackageName() + "_preferences";
+    }
+
+    /**
+     * アプリケーションがデバッグモードで起動しているか判定します。
+     * リリース版の場合は常にfalseが返却されます。
+     *
+     * @return 開発時には {@code true}、リリース時には{@code false}
+     */
+    protected static boolean isDebug() {
+        return BuildConfig.DEBUG;
+    }
+
+    /**
+     * 文字列を真偽値へ変換します。
+     * 変換対象は以下の値です。
+     * <p>
+     * 1, "1" : {@code true}
+     * 2, 上記以外 : {@code false}
+     *
+     * @param value 変換対象の値
+     * @return 入力値が"1"の場合は{@code true}, それ以外は{@code false}。
+     */
+    protected static boolean convertToBoolean(String value) {
+        String TRUE = "1";
+        return TRUE.equals(value);
+    }
+
+    /**
+     * クッキー情報を設定します。
+     *
+     * @see CookieManager
+     * @see CookieManager#setCookiePolicy(CookiePolicy)
+     * @see CookieManager#setDefault(CookieHandler)
+     */
+    protected static void setCookie() {
+        CookieManager cookieManager = new CookieManager();
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(cookieManager);
+    }
+
+    /**
+     * 入力情報をクリップボードへコピーする処理を実行します。
+     * システム情報からクリップボードを取得できなかった場合は{@code false}を返却します。
+     *
+     * @param context アプリケーション情報。
+     * @param label   コピー対象の文字列に関する説明。
+     * @param text    コピー対象の文字列。
+     * @return コピー処理が正常終了した場合は {@code true}、それ以外は{@code false}
+     */
+    protected static boolean copyToClipboard(Context context, String label, String text) {
+
+        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
+        if (clipboardManager == null) {
+            return false;
+        }
+
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text));
+
+        return true;
+    }
+
+    /**
+     * 入力情報をクリップボードへコピーする処理を実行します。
+     * システム情報からクリップボードを取得できなかった場合は{@code false}を返却します。
+     *
+     * @param context アプリケーション情報。
+     * @param text    コピー対象の文字列。
+     * @return コピー処理が正常終了した場合は {@code true}、それ以外は{@code false}
+     */
+    protected static boolean copyToClipboard(Context context, String text) {
+        return copyToClipboard(context, "", text);
     }
 
     /**
@@ -136,51 +208,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // Activityが生成されてからインスタンスを取得する
         sharedPreferences = getSharedPreferences(getDefaultSharedPreferencesName(this), Context.MODE_PRIVATE);
-        sessionSharedPreferences = (SessionSharedPreferences) getApplication();
 
         initializeView();
         setListeners();
 
         Logger.Info.write(TAG, methodName, "END");
-    }
-
-    /**
-     * 共有情報のデフォルトファイル名を返却します。
-     *
-     * @param context アプリケーション情報。
-     * @return デフォルトファイル名。
-     */
-    private String getDefaultSharedPreferencesName(Context context) {
-        return context.getPackageName() + "_preferences";
-    }
-
-    /**
-     * 引数として渡されたメッセージIDを基にメッセージ付きのトーストを下部に表示します。
-     * メッセージIDからメッセージへの変換は当該メソッド内で行われます。
-     *
-     * @param messageId 出力メッセージに紐づくユニークな値
-     * @see MasterMessageInformation#searchDisplayMessage(MessageID, MessageLanguageKind)
-     * @see MasterMessageInformation#getMessage()
-     */
-    protected final void showInformationToast(MessageID messageId) {
-        showInformationToast(messageId, new ArrayList<>());
-    }
-
-    /**
-     * 引数として渡されたメッセージIDを基にメッセージ付きのトーストを下部に表示します。
-     * メッセージIDからメッセージへの変換は当該メソッド内で行われます。
-     *
-     * @param messageId  出力メッセージに紐づくユニークな値
-     * @param additional メッセージに付加する情報
-     * @see MasterMessageInformation#searchDisplayMessage(MessageID, MessageLanguageKind)
-     * @see MasterMessageInformation#getMessage()
-     */
-    protected final void showInformationToast(MessageID messageId, List<String> additional) {
-
-        MasterMessageInformation masterMessageInformation = getMasterMessageInformation();
-        masterMessageInformation.searchDisplayMessage(messageId, MessageLanguageKind.English);
-
-        Toast.makeText(this, String.format(masterMessageInformation.getMessage(), additional), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -251,12 +283,12 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param unitId         AdMobで登録されている広告のUnit。
      * @param isUserUnderage ユーザの未成年可否。
      */
-    protected void initializeInterstitialAd(String appId, String unitId, boolean isUserUnderage) {
+    protected void initializeInterstitialAd(String appId, String unitId, final boolean isUserUnderage) {
 
         MobileAds.initialize(this, appId);
         String consentResult = getSharedPreference(PreferenceKey.GeneralDataProtectionRegulation);
 
-        Bundle extras = new Bundle();
+        final Bundle extras = new Bundle();
         if (ConsentStatus.NON_PERSONALIZED.name().equals(consentResult)) {
             extras.putString("npa", "1");
         }
@@ -379,53 +411,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * アプリケーションがデバッグモードで起動しているか判定します。
-     * リリース版の場合は常にfalseが返却されます。
-     *
-     * @return 開発時には {@code true}、リリース時には{@code false}
-     */
-    protected boolean isDebug() {
-        return BuildConfig.DEBUG;
-    }
-
-    /**
-     * 文字列を真偽値へ変換します。
-     * 変換対象は以下の値です。
-     * <p>
-     * 1, "1" : {@code true}
-     * 2, 上記以外 : {@code false}
-     *
-     * @param value 変換対象の値
-     * @return 入力値が"1"の場合は{@code true}, それ以外は{@code false}。
-     */
-    protected final boolean convertToBoolean(String value) {
-        String TRUE = "1";
-        return TRUE.equals(value);
-    }
-
-    /**
-     * セッション共有情報から処理モードを参照し、
-     * アプリケーションの処理モードを判定します。
-     * 処理モードは初期値でオフラインモードに設定されているため、
-     * 必要に応じて適宜オンラインモードへ変更する必要があります。
-     *
-     * @return オンラインモードの場合は {@code true}、それ以外の場合は{@code false}
-     * @see #sessionSharedPreferences
-     */
-    protected final boolean isOnlineMode() {
-        return sessionSharedPreferences.getModeType() == ModeType.Online;
-    }
-
-    /**
-     * セッション共有情報へ処理モードを設定します。
-     *
-     * @see #isOnlineMode()
-     */
-    protected final void setModeType(ModeType modeType) {
-        sessionSharedPreferences.setModeType(modeType);
-    }
-
-    /**
      * ネットワークの接続状態の判定処理を行います。
      *
      * @return 有効なネットワーク状態の場合は {@code true}、それ以外は{@code false}
@@ -451,53 +436,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 入力情報をクリップボードへコピーする処理を実行します。
-     * システム情報からクリップボードを取得できなかった場合は{@code false}を返却します。
-     *
-     * @param context アプリケーション情報。
-     * @param text    コピー対象の文字列。
-     * @return コピー処理が正常終了した場合は {@code true}、それ以外は{@code false}
-     */
-    protected final boolean copyToClipboard(Context context, String text) {
-        return copyToClipboard(context, "", text);
-    }
-
-    /**
-     * 入力情報をクリップボードへコピーする処理を実行します。
-     * システム情報からクリップボードを取得できなかった場合は{@code false}を返却します。
-     *
-     * @param context アプリケーション情報。
-     * @param label   コピー対象の文字列に関する説明。
-     * @param text    コピー対象の文字列。
-     * @return コピー処理が正常終了した場合は {@code true}、それ以外は{@code false}
-     */
-    protected final boolean copyToClipboard(Context context, String label, String text) {
-
-        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-
-        if (clipboardManager == null) {
-            return false;
-        }
-
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text));
-
-        return true;
-    }
-
-    /**
-     * クッキー情報を設定します。
-     *
-     * @see CookieManager
-     * @see CookieManager#setCookiePolicy(CookiePolicy)
-     * @see CookieManager#setDefault(CookieHandler)
-     */
-    protected void setCookie() {
-        CookieManager cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-        CookieHandler.setDefault(cookieManager);
-    }
-
-    /**
      * 現在動作しているアクティビティをバックグラウンドへ移行させ、
      * 指定されたアクティビティを起動する処理を実行します。
      *
@@ -505,7 +443,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @see #startActivity(Class, Map)
      */
     protected final void startActivity(Class toClass) {
-        startActivity(toClass, new HashMap<>());
+        startActivity(toClass, new HashMap<String, String>());
     }
 
     /**
@@ -648,16 +586,5 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected final CurrentApplicationInformation getCurrentApplicationInformation() {
         return CurrentApplicationInformation.getInstance(this);
-    }
-
-    /**
-     * 論理モデル名「マスタメッセージ情報」のオブジェクトを返却します。
-     * マスタメッセージ情報はシングルトンオブジェクトです。
-     *
-     * @return マスタメッセージ情報のモデルオブジェクト。
-     * @see MasterMessageInformation
-     */
-    protected final MasterMessageInformation getMasterMessageInformation() {
-        return MasterMessageInformation.getInstance(this);
     }
 }

@@ -4,24 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".MemoActivity"
-    tools:showIn="@layout/activity_main"
-    android:orientation="vertical">
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/one_note_banner_top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7168775731316469/7370790578" />
+    tools:showIn="@layout/activity_main">
 
     <EditText
         android:id="@+id/one_note_input_field"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:hint="Write here..."
-        android:gravity="start|top"/>
+        android:gravity="start|top"
+        android:hint="@string/memo_hint_write_here"
+        android:importantForAutofill="no" />
 </LinearLayout>

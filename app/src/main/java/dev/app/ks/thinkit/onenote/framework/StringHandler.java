@@ -1,7 +1,5 @@
 package dev.app.ks.thinkit.onenote.framework;
 
-import java.util.Arrays;
-
 /**
  * ======================================================================
  * Project Name    : Common
@@ -515,10 +513,15 @@ public final class StringHandler {
         StringBuilder sb = new StringBuilder();
 
         if (StringChecker.isEffectiveString(stringSeparator)) {
-            Arrays.stream(sequences).forEach(sequence -> sb.append(sequence).append(separator));
+            for (String sequence : sequences) {
+                sb.append(sequence).append(separator);
+            }
+
             sb.setLength(sb.length() - stringSeparator.length());
         } else {
-            Arrays.stream(sequences).forEach(sb::append);
+            for (String sequence : sequences) {
+                sb.append(sequence);
+            }
         }
 
         return sb.toString();

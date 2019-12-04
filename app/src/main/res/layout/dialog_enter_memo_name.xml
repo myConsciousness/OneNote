@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/flatWhiteSmoke"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_view_register_memo_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Enter memo name"
+        android:textColor="@color/flatBunker"
+        android:textSize="30sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_field_memo_name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:theme="@style/TextInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_field_memo_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_insert_drive_file_black_24dp"
+            android:drawablePadding="5dp"
+            android:hint="write here"
+            android:inputType="textPersonName"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:textColor="@color/flatBunker" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_cancel_memo_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape_rounded_corners_10dp"
+            android:backgroundTint="#797373"
+            android:text="Cancel"
+            android:textColor="@color/flatWhiteSmoke" />
+
+        <Button
+            android:id="@+id/button_register_memo_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape_rounded_corners_10dp"
+            android:backgroundTint="@color/flatLightCoral"
+            android:text="Register"
+            android:textColor="@color/flatWhiteSmoke" />
+    </LinearLayout>
+</LinearLayout>

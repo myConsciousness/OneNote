@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import dev.app.ks.thinkit.onenote.framework.CommonConstants;
 import dev.app.ks.thinkit.onenote.framework.FileHandler;
@@ -52,7 +51,7 @@ public final class DatabaseOpenHelper extends SQLiteOpenHelper {
     /**
      * データベース名。
      */
-    private static final String DATABASE_NAME = "duovoc_debug.db";
+    private static final String DATABASE_NAME = "one_note.db";
 
     /**
      * データベースのバージョン。
@@ -159,7 +158,9 @@ public final class DatabaseOpenHelper extends SQLiteOpenHelper {
                     String content = FileHandler.read(assetManager.open(fileDirectory));
                     String[] sqlList = StringHandler.split(content, CommonConstants.CHAR_SEPARATOR_SLASH);
 
-                    Arrays.stream(sqlList).forEach(database::execSQL);
+                    for (String sql : sqlList) {
+                        database.execSQL(sql);
+                    }
                 }
             }
         } catch (IOException e) {
