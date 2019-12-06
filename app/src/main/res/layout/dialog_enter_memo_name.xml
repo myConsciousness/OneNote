@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_insert_drive_file_black_24dp"
             android:drawablePadding="5dp"
-            android:hint="write here"
+            android:hint="Memo name"
             android:inputType="textPersonName"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -38,6 +38,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
+        android:id="@+id/linear_layout_button_memo_name_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

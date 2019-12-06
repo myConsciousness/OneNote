@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -54,7 +55,7 @@ public final class MemoActivity extends BaseActivity {
 
                 // TODO 既にファイル名が設定されている場合は更新処理
                 // TODO ファイル名が存在しない場合は新規登録処理
-                EditText editTextMemo = view.findViewById(R.id.one_note_input_field);
+                EditText editTextMemo = findViewById(R.id.one_note_input_field);
                 buildRegisterMemoNameDialog(editTextMemo.getText().toString());
             }
         });
@@ -94,43 +95,48 @@ public final class MemoActivity extends BaseActivity {
      * @param memo 画面へ入力されたメモ。
      */
     protected void buildRegisterMemoNameDialog(final String memo) {
+        String methodName = "buildRegisterMemoNameDialog";
+        Logger.Debug.write(TAG, methodName, "START");
 
         final View viewDialog = getLayoutInflater().inflate(R.layout.dialog_enter_memo_name, null);
 
-        if (registerMemoNameDialog == null) {
-            Button buttonRegister = findViewById(R.id.button_register_memo_name);
-            Button buttonCancel = findViewById(R.id.button_cancel_memo_name);
+        final Button buttonRegister = viewDialog.findViewById(R.id.button_register_memo_name);
+        Button buttonCancel = viewDialog.findViewById(R.id.button_cancel_memo_name);
 
-            buttonRegister.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText editTextMemoName = viewDialog.findViewById(R.id.input_field_memo_name);
-                    String memoName = editTextMemoName.getText().toString();
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTextMemoName = viewDialog.findViewById(R.id.input_field_memo_name);
+                String memoName = editTextMemoName.getText().toString();
 
-                    if (StringChecker.isEffectiveString(memoName)) {
-                        MemoHolder memoHolder = new MemoHolder(memoName, memo);
-                        MemoInformation memoInformation = MemoInformation.getInstance(MemoActivity.this);
-                        memoInformation.replace(memoHolder);
+                if (StringChecker.isEffectiveString(memoName)) {
+                    MemoHolder memoHolder = new MemoHolder(memoName, memo);
+                    MemoInformation memoInformation = MemoInformation.getInstance(MemoActivity.this);
+                    memoInformation.replace(memoHolder);
 
-                        Snackbar.make(v, "Registered successfully", Snackbar.LENGTH_LONG).show();
-                    } else {
-                        Snackbar.make(v, "Memo name is required", Snackbar.LENGTH_LONG).show();
-                    }
+                    Snackbar.make(v, "Registered successfully", Snackbar.LENGTH_LONG).show();
+
+                    LinearLayout linearLayoutButton = viewDialog.findViewById(R.id.linear_layout_button_memo_name_dialog);
+                    linearLayoutButton.removeView(buttonRegister);
+
+                } else {
+                    Snackbar.make(v, "Memo name is required", Snackbar.LENGTH_LONG).show();
                 }
-            });
+            }
+        });
 
-            buttonCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    registerMemoNameDialog.dismiss();
-                }
-            });
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerMemoNameDialog.dismiss();
+            }
+        });
 
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            dialogBuilder.setView(viewDialog);
-            registerMemoNameDialog = dialogBuilder.create();
-        }
-
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(viewDialog);
+        registerMemoNameDialog = dialogBuilder.create();
         registerMemoNameDialog.show();
+
+        Logger.Debug.write(TAG, methodName, "END");
     }
 }
