@@ -29,8 +29,12 @@ public final class MemoActivity extends BaseActivity {
      */
     private AlertDialog registerMemoNameDialog;
 
+    /**
+     * 当該アクティビティのコンストラクタ。
+     * 基底クラスにレイアウトIDを渡すことで画面を構築します。
+     */
     public MemoActivity() {
-        super(R.layout.activity_main);
+        super(R.layout.activity_memo);
     }
 
     @Override
@@ -39,6 +43,7 @@ public final class MemoActivity extends BaseActivity {
         Logger.Debug.write(TAG, methodName, "START");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("New Memo");
         setSupportActionBar(toolbar);
 
         Logger.Debug.write(TAG, methodName, "END");
@@ -52,9 +57,6 @@ public final class MemoActivity extends BaseActivity {
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO 既にファイル名が設定されている場合は更新処理
-                // TODO ファイル名が存在しない場合は新規登録処理
                 EditText editTextMemo = findViewById(R.id.one_note_input_field);
                 buildRegisterMemoNameDialog(editTextMemo.getText().toString());
             }
@@ -112,13 +114,22 @@ public final class MemoActivity extends BaseActivity {
                 if (StringChecker.isEffectiveString(memoName)) {
                     MemoHolder memoHolder = new MemoHolder(memoName, memo);
                     MemoInformation memoInformation = MemoInformation.getInstance(MemoActivity.this);
-                    memoInformation.replace(memoHolder);
 
+                    Toolbar toolbar = findViewById(R.id.toolbar);
+                    String memoTitle = toolbar.getTitle().toString();
+
+                    if ("New Memo".equals(memoTitle)) {
+                        memoInformation.insert(memoHolder);
+                    } else {
+                        memoInformation.replace(memoHolder);
+                    }
+
+                    toolbar.setTitle(memoName);
                     Snackbar.make(v, "Registered successfully", Snackbar.LENGTH_LONG).show();
 
                     LinearLayout linearLayoutButton = viewDialog.findViewById(R.id.linear_layout_button_memo_name_dialog);
                     linearLayoutButton.removeView(buttonRegister);
-
+                    editTextMemoName.setEnabled(false);
                 } else {
                     Snackbar.make(v, "Memo name is required", Snackbar.LENGTH_LONG).show();
                 }

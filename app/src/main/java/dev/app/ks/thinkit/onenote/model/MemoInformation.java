@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-import java.util.List;
-
 import dev.app.ks.thinkit.onenote.framework.IModelMapKey;
 import dev.app.ks.thinkit.onenote.framework.ModelList;
 import dev.app.ks.thinkit.onenote.framework.ModelMap;
@@ -100,7 +98,28 @@ public final class MemoInformation extends BaseModel {
      * 当該処理に依ってモデルリストは更新されません。
      *
      * @param memoHolder 挿入処理を行う際に必要な情報が格納されたデータクラス。
-     * @see BaseModel#replaceAll(List)
+     * @see BaseModel#insert(InsertHolder)
+     */
+    public void insert(MemoHolder memoHolder) {
+
+        InsertHolder insertHolder = new InsertHolder();
+        ContentValues contentValues = insertHolder.getContentValues();
+
+        MemoColumnKey[] memoColumnKeys = MemoColumnKey.values();
+
+        for (MemoColumnKey column : memoColumnKeys) {
+            column.setContentValues(contentValues, memoHolder);
+        }
+
+        super.insert(insertHolder);
+    }
+
+    /**
+     * 渡された引数の情報を基にレコードの挿入処理を実行します。
+     * 当該処理に依ってモデルリストは更新されません。
+     *
+     * @param memoHolder 挿入処理を行う際に必要な情報が格納されたデータクラス。
+     * @see BaseModel#replace(InsertHolder)
      */
     public void replace(MemoHolder memoHolder) {
 
