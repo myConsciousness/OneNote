@@ -103,7 +103,7 @@ public final class MemoActivity extends BaseActivity {
         final View viewDialog = getLayoutInflater().inflate(R.layout.dialog_enter_memo_name, null);
 
         final Button buttonRegister = viewDialog.findViewById(R.id.button_register_memo_name);
-        Button buttonCancel = viewDialog.findViewById(R.id.button_cancel_memo_name);
+        final Button buttonCancel = viewDialog.findViewById(R.id.button_cancel_memo_name);
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,9 +127,10 @@ public final class MemoActivity extends BaseActivity {
                     toolbar.setTitle(memoName);
                     Snackbar.make(v, "Registered successfully", Snackbar.LENGTH_LONG).show();
 
+                    editTextMemoName.setEnabled(false);
+                    buttonCancel.setText(R.string.button_leave);
                     LinearLayout linearLayoutButton = viewDialog.findViewById(R.id.linear_layout_button_memo_name_dialog);
                     linearLayoutButton.removeView(buttonRegister);
-                    editTextMemoName.setEnabled(false);
                 } else {
                     Snackbar.make(v, "Memo name is required", Snackbar.LENGTH_LONG).show();
                 }
