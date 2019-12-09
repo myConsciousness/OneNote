@@ -17,16 +17,11 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
-        android:id="@+id/one_note_input_field"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="start|top"
-        android:hint="@string/memo_hint_write_here"
-        android:importantForAutofill="no" />
+    <include
+        android:id="@+id/include_content_main"
+        layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

@@ -9,6 +9,7 @@ import dev.app.ks.thinkit.onenote.framework.ModelList;
 import dev.app.ks.thinkit.onenote.framework.ModelMap;
 import dev.app.ks.thinkit.onenote.framework.model.BaseModel;
 import dev.app.ks.thinkit.onenote.framework.model.holder.InsertHolder;
+import dev.app.ks.thinkit.onenote.framework.model.holder.SelectHolder;
 import dev.app.ks.thinkit.onenote.model.property.MemoColumnKey;
 import dev.app.ks.thinkit.onenote.model.property.Table;
 
@@ -54,6 +55,22 @@ public final class MemoInformation extends BaseModel {
         }
 
         return thisInstance;
+    }
+
+    /**
+     * 渡された引数の情報を基にレコードの検索処理を実行します。
+     * 検索結果はモデルリストに格納され、
+     * {@code getModelInfo()}を実行することで取得できます。
+     *
+     * @see BaseModel#select(SelectHolder)
+     * @see #onPostSelect(Cursor)
+     * @see #getModelInfo()
+     */
+    public void selectAll() {
+        SelectHolder selectHolder = new SelectHolder();
+        selectHolder.setColumns(null);
+
+        super.select(selectHolder);
     }
 
     /**

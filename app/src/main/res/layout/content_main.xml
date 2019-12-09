@@ -12,8 +12,9 @@
     <EditText
         android:id="@+id/one_note_input_field"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="start|top"
+        android:layout_height="fill_parent"
+        android:background="#00000000"
+        android:gravity="top"
         android:hint="@string/memo_hint_write_here"
-        android:importantForAutofill="no" />
+        android:padding="15dp" />
 </LinearLayout>

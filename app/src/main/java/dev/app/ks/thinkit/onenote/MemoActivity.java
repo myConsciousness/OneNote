@@ -17,12 +17,37 @@ import dev.app.ks.thinkit.onenote.framework.StringChecker;
 import dev.app.ks.thinkit.onenote.model.MemoHolder;
 import dev.app.ks.thinkit.onenote.model.MemoInformation;
 
+/**
+ * ======================================================================
+ * Project Name    : OneNote
+ * File Name       : MemoActivity.java
+ * Encoding        : UTF-8
+ * Creation Date   : 2019/12/04
+ * <p>
+ * Copyright © 2019 Kato Shinya. All rights reserved.
+ * <p>
+ * This source code or any portion thereof must not be
+ * reproduced or used in any manner whatsoever.
+ * ======================================================================
+ * <p>
+ * One Noteの画面機能を実装したActivityクラスです。
+ * 当該クラスではメモ機能に必要な各機能を実装します。
+ *
+ * @author Kato Shinya
+ * @version 1.0
+ * @since 1.0
+ */
 public final class MemoActivity extends BaseActivity {
 
     /**
      * クラス名。
      */
     private static final String TAG = MemoActivity.class.getSimpleName();
+
+    /**
+     * One Noteの新規メモの名前。
+     */
+    private static final String NEW_MEMO_NAME = "New Memo";
 
     /**
      * メモ名登録ダイアログのオブジェクト。
@@ -43,7 +68,7 @@ public final class MemoActivity extends BaseActivity {
         Logger.Debug.write(TAG, methodName, "START");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("New Memo");
+        toolbar.setTitle(NEW_MEMO_NAME);
         setSupportActionBar(toolbar);
 
         Logger.Debug.write(TAG, methodName, "END");
@@ -118,7 +143,7 @@ public final class MemoActivity extends BaseActivity {
                     Toolbar toolbar = findViewById(R.id.toolbar);
                     String memoTitle = toolbar.getTitle().toString();
 
-                    if ("New Memo".equals(memoTitle)) {
+                    if (MemoActivity.NEW_MEMO_NAME.equals(memoTitle)) {
                         memoInformation.insert(memoHolder);
                     } else {
                         memoInformation.replace(memoHolder);
